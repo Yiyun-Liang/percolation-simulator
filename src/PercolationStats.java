@@ -8,7 +8,6 @@ import java.util.IllegalFormatCodePointException;
  * Created by isa on 2017-02-04.
  */
 public class PercolationStats {
-    private int n;
     private double[] nums;
 
     // perform trials independent experiments on an n-by-n grid
@@ -16,22 +15,24 @@ public class PercolationStats {
         if(n <= 0 || trials <= 0){
             throw new IllegalArgumentException();
         }
-        this.n = n;
         int t = trials;
         nums = new double[trials];
+        int count = 0;
 
         for(int i = 0; i < t; i++){
             Percolation pc = new Percolation(n);
-            int count = 0;
+            count = 0;
             while(!pc.percolates()){
                 int row = StdRandom.uniform(1, n+1);
                 int col = StdRandom.uniform(1, n+1);
                 if(!pc.isOpen(row, col)){
                     pc.open(row, col);
+                }else{
+                    continue;
                 }
                 count++;
             }
-            nums[i] = (double)count/n*n;
+            nums[i] = (double)count/(n*n);
         }
     }
 
@@ -59,6 +60,7 @@ public class PercolationStats {
     // takes two commandline arguments, n and T
     // performs T independent computational experiments on an n-by-n grid
     public static void main(String[] args){
-
+        PercolationStats ps = new PercolationStats(100, 50);
+        System.out.println("mean: " + ps.mean());
     }
 }

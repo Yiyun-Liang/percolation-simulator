@@ -47,17 +47,17 @@ public class Percolation {
 
         // connect with neighbors if any neighbors are open
         // left and right
-        if(isOpen(row, col-1)){
+        if(col != 1 && isOpen(row, col-1)){
             grid.union(index-1, index);
         }
-        if(isOpen(row, col+1)){
+        if(col != n && isOpen(row, col+1)){
             grid.union(index+1, index);
         }
         // top and bottom;
-        if(isOpen(row-1, col)){
+        if(row != 1 && isOpen(row-1, col)){
             grid.union(index-n, index);
         }
-        if(isOpen(row+1, col)){
+        if(row != n && isOpen(row+1, col)){
             grid.union(index+n, index);
         }
 
