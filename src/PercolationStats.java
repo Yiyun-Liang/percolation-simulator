@@ -60,7 +60,9 @@ public class PercolationStats {
     // takes two commandline arguments, n and T
     // performs T independent computational experiments on an n-by-n grid
     public static void main(String[] args){
-        PercolationStats ps = new PercolationStats(100, 50);
-        System.out.println("mean: " + ps.mean());
+        PercolationStats ps = new PercolationStats(2, 1000);
+        System.out.println("mean:                " + ps.mean());
+        System.out.println("standard deviation:  " + ps.stddev());
+        System.out.println("confidence interval: [" + ps.confidenceLo() + ", " + ps.confidenceHi() + "]");
     }
 }
