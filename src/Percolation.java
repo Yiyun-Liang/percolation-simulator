@@ -8,7 +8,8 @@ public class Percolation {
     private int numOpenSites;
     private int totalSites;
     private boolean[] isOpenArr;
-    private WeightedQuickUnionUF grid;
+    private WeightedQuickUnionUF uf;
+    private WeightedQuickUnionUF adjustor;
 
     // create n-by-n grid, with all sites blocked
     public Percolation(int n){
@@ -19,7 +20,8 @@ public class Percolation {
         totalSites = n*n;
 
         // this is an array
-        grid = new WeightedQuickUnionUF(totalSites+2);
+        uf = new WeightedQuickUnionUF(totalSites+2);
+        adjustor = new WeightedQuickUnionUF(totalSites+1);
         this.n = n;
         numOpenSites = 0;
 
@@ -34,45 +36,52 @@ public class Percolation {
 
     // open site (row, col) if it is not open already
     public void open(int row, int col){
-        if(row < 1 || row > n || col < 1 || row > n){
+        if(row < 1 || row > n || col < 1 || col > n){
             throw new IndexOutOfBoundsException();
         }
 
         int index = (row-1) * n + col;
 
-        if(!isOpen(row, col)){
-            isOpenArr[index] = true;
-            numOpenSites++;
+        if(isOpen(row, col)){
+            return;
         }
+
+        isOpenArr[index] = true;
+        numOpenSites++;
 
         // connect with neighbors if any neighbors are open
         // left and right
         if(col != 1 && isOpen(row, col-1)){
-            grid.union(index-1, index);
+            uf.union(index-1, index);
+            adjustor.union(index-1, index);
         }
         if(col != n && isOpen(row, col+1)){
-            grid.union(index+1, index);
+            uf.union(index+1, index);
+            adjustor.union(index+1, index);
         }
         // top and bottom;
         if(row != 1 && isOpen(row-1, col)){
-            grid.union(index-n, index);
+            uf.union(index-n, index);
+            adjustor.union(index-n, index);
         }
         if(row != n && isOpen(row+1, col)){
-            grid.union(index+n, index);
+            uf.union(index+n, index);
+            adjustor.union(index+n, index);
         }
 
         // connect to top or bottom virtual node if any top row nodes or bottom row nodes are open now
         if(index <= n){
-            grid.union(0, index);
+            uf.union(0, index);
+            adjustor.union(0, index);
         }
-        if(index >= totalSites - 2){
-            grid.union(totalSites+1, index);
+        if(index > totalSites - n){
+            uf.union(totalSites+1, index);
         }
     }
 
     // is site (row, col) open?
     public boolean isOpen(int row, int col){
-        if(row < 1 || row > n || col < 1 || row > n){
+        if(row < 1 || row > n || col < 1 || col > n){
             throw new IndexOutOfBoundsException();
         }
 
@@ -83,13 +92,13 @@ public class Percolation {
 
     // is site (row, col) full?
     public boolean isFull(int row, int col){
-        if(row < 1 || row > n || col < 1 || row > n){
+        if(row < 1 || row > n || col < 1 || col > n){
             throw new IndexOutOfBoundsException();
         }
 
         int index = (row-1) * n + col;
 
-        return grid.connected(0, index);
+        return uf.connected(0, index) && adjustor.connected(0, index);
     }
 
     // number of open sites
@@ -99,7 +108,7 @@ public class Percolation {
 
     // does the system percolate?
     public boolean percolates(){
-        return grid.connected(0, totalSites+1);
+        return uf.connected(0, totalSites+1);
     }
 
 }

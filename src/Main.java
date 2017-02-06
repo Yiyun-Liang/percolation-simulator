@@ -46,8 +46,7 @@ public class Main {
         StdDraw.setFont(new Font("SansSerif", Font.PLAIN, 12));
         StdDraw.setPenColor(StdDraw.BLACK);
         // Write the given text string in the current font, centered at (x, y).
-        //StdDraw.text(0.25*n, -n*0.025, opened + " open sites");
-        StdDraw.textLeft(0.5, n+0.7, opened + "/" + n*n);
+        StdDraw.textLeft(0.5, n+0.7, "opened/total sites: " + opened + "/" + n*n);
         if (pc.percolates()){
             StdDraw.textLeft(0.5, n+0.3, "percolates");
         }
@@ -62,7 +61,7 @@ public class Main {
         In in = new In(args[0]);
         int n = in.readInt();
 
-        // turn on animation mode
+        StdDraw.enableDoubleBuffering();
         StdDraw.show(0);
 
         Percolation pc = new Percolation(n);
